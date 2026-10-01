@@ -1,0 +1,17 @@
+name: fraud_monitoring
+version: "1.0.0"
+config-version: 2
+profile: fraud_monitoring
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+
+models:
+  fraud_monitoring:
+    staging:
+      +materialized: view
+      +schema: fraud_staging
+    marts:
+      +materialized: table
+      +schema: fraud_marts

@@ -1,0 +1,22 @@
+select
+    txn_id,
+    step,
+    cast(floor(step / 24.0) as integer) as day_number,
+    step % 24 as hour_of_day,
+    case when step % 24 between 0 and 6 then 1 else 0 end as is_night,
+    case when txn_type = 'TRANSFER' then 1 else 0 end as is_transfer,
+    amount,
+    ln(amount + 1) as log_amount,
+    oldbalance_org,
+    newbalance_orig,
+    oldbalance_dest,
+    newbalance_dest,
+    case when oldbalance_dest = 0 then 1 else 0 end as dest_zero_before,
+    oldbalance_dest + amount - newbalance_dest as dest_error,
+    oldbalance_org - amount - newbalance_orig as orig_error,
+    case when newbalance_orig = 0 and oldbalance_org > 0 then 1 else 0 end as sender_emptied,
+    case when amount = oldbalance_org and oldbalance_org > 0 then 1 else 0 end as full_balance_moved,
+    amount / (oldbalance_org + 1) as amount_to_balance,
+    is_flagged_fraud,
+    is_fraud
+from {{ ref('stg_transactions') }}

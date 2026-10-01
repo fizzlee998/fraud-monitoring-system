@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: fct_transaction_features
+    columns:
+      - name: txn_id
+        tests:
+          - unique
+          - not_null
+      - name: is_fraud
+        tests:
+          - not_null
+      - name: log_amount
+        tests:
+          - not_null
